@@ -259,7 +259,7 @@
       <a href="#prediksi"
          class="flex items-center gap-2.5 bg-batik-500 hover:bg-batik-600 text-white font-sans font-medium px-8 py-4 rounded-full shadow-xl transition-all hover:scale-105">
         <i data-lucide="scan-line" class="w-5 h-5"></i>
-        Prediksi Makanan
+        Checkout Makanan
       </a>
       <a href="#gallery"
          class="flex items-center gap-2.5 bg-white/15 hover:bg-white/25 backdrop-blur text-white font-sans font-medium px-8 py-4 rounded-full border border-white/30 transition-all hover:scale-105">
@@ -310,7 +310,7 @@
     <div class="text-center mb-14 reveal">
       <p class="font-lora italic text-batik-500 mb-2">Teknologi Pintar</p>
       <h2 class="font-display font-bold text-tanah-800 text-4xl md:text-5xl section-title">
-        Prediksi Harga Makanan
+        Checkout Harga Makanan
       </h2>
       <p class="font-sans text-tanah-500 mt-5 max-w-xl mx-auto text-sm leading-relaxed">
         Upload foto atau gunakan kamera untuk mendeteksi jenis makanan dan mengetahui harganya secara instan.
@@ -348,7 +348,7 @@
             <p class="font-sans text-tanah-400 text-xs">atau klik untuk memilih file</p>
             <p class="font-sans text-tanah-300 text-xs mt-2">PNG, JPG, WEBP — Maks. 10 MB</p>
           </div>
-          <input id="file-input" type="file" accept="image/*" class="hidden" onchange="handleFile(this.files[0])"/>
+          <input id="file-input" type="file" accept="image/*" class="hidden" multiple onchange="handleFiles(this.files)"/>
 
           <!-- Preview -->
           <div id="upload-preview" class="hidden mt-4 relative">
@@ -448,7 +448,12 @@
               <i data-lucide="receipt" class="w-5 h-5 text-batik-100"></i>
               <h4 class="font-display font-bold text-white text-lg">Struk Pesanan</h4>
             </div>
-            <button onclick="clearStruk()" class="text-batik-200 hover:text-white transition-colors text-xs font-sans">Hapus</button>
+            <div class="flex items-center gap-3">
+              <button onclick="openPaymentModal()" class="bg-white text-batik-600 hover:bg-batik-50 transition-colors text-xs font-sans font-semibold px-3 py-1.5 rounded-full flex items-center gap-1">
+                <i data-lucide="wallet" class="w-3 h-3"></i> Bayar
+              </button>
+              <button onclick="clearStruk()" class="text-batik-200 hover:text-white transition-colors text-xs font-sans">Hapus</button>
+            </div>
           </div>
           <div class="px-6 py-5">
             <div id="struk-items" class="divide-y divide-batik-50 min-h-[40px]">
@@ -608,6 +613,74 @@
   <p class="font-sans text-tanah-500 text-xs">© 2025 Warung Nusantara — Dibuat dengan ❤️ untuk cita rasa Indonesia</p>
 </footer>
 
+<!-- PAYMENT MODAL -->
+<div id="payment-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-tanah-900/70 backdrop-blur-sm" onclick="closePaymentModal()"></div>
+  <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-batik-600 to-batik-400 px-6 py-5 text-center relative">
+      <div class="absolute top-3 right-3">
+        <button onclick="closePaymentModal()" class="w-7 h-7 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors">
+          <i data-lucide="x" class="w-4 h-4 text-white"></i>
+        </button>
+      </div>
+      <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-2">
+        <i data-lucide="scan-line" class="w-6 h-6 text-white"></i>
+      </div>
+      <p class="font-sans text-batik-100 text-xs uppercase tracking-widest">Total Pembayaran</p>
+      <p id="payment-total-modal" class="font-display font-bold text-white text-4xl mt-1">Rp 0</p>
+    </div>
+    <!-- QR Section -->
+    <div class="px-6 py-5 text-center">
+      <p class="font-lora italic text-tanah-500 text-sm mb-4">Scan QR menggunakan DANA atau dompet digital lainnya</p>
+      <div class="relative inline-block">
+        <div class="absolute -inset-2 bg-gradient-to-br from-batik-300 to-batik-500 rounded-3xl opacity-30 blur-md"></div>
+        <div class="relative bg-white border-4 border-batik-200 rounded-2xl p-3 shadow-xl inline-block">
+            <img src="/static/src/dana-qr.jpg" alt="QR Code DANA" class="w-52 h-52 object-contain rounded-xl" />
+          <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white border border-batik-200 rounded-full px-3 py-1 shadow text-[10px] font-sans font-bold text-batik-600 tracking-widest flex items-center gap-1">
+            <span>⬛</span> QRIS
+          </div>
+        </div>
+      </div>
+      <!-- Steps -->
+      <div class="mt-8 text-left space-y-2">
+        <p class="font-sans text-tanah-500 text-xs font-medium uppercase tracking-wider mb-3">Cara Bayar:</p>
+        <div class="flex items-start gap-3">
+          <span class="w-5 h-5 bg-batik-100 text-batik-600 rounded-full text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+          <p class="font-sans text-tanah-600 text-sm">Buka aplikasi DANA / GoPay / OVO / ShopeePay</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="w-5 h-5 bg-batik-100 text-batik-600 rounded-full text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+          <p class="font-sans text-tanah-600 text-sm">Tap <strong>Scan QR</strong> lalu arahkan ke kode di atas</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="w-5 h-5 bg-batik-100 text-batik-600 rounded-full text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+          <p class="font-sans text-tanah-600 text-sm">Masukkan nominal <strong id="payment-total-step" class="text-batik-600">Rp 0</strong> lalu konfirmasi</p>
+        </div>
+      </div>
+      <button onclick="confirmPayment()" class="mt-6 w-full bg-gradient-to-r from-batik-500 to-batik-400 hover:from-batik-600 hover:to-batik-500 text-white font-sans font-semibold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-lg shadow-batik-200">
+        <i data-lucide="check-circle" class="w-5 h-5"></i> Konfirmasi Sudah Bayar
+      </button>
+      <button onclick="closePaymentModal()" class="mt-2 w-full text-tanah-400 hover:text-tanah-600 font-sans text-sm py-2 transition-colors">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT SUCCESS MODAL -->
+<div id="payment-success-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-tanah-900/70 backdrop-blur-sm"></div>
+  <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center">
+    <div class="w-20 h-20 bg-hijau-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+      <i data-lucide="check-circle-2" class="w-11 h-11 text-hijau-500"></i>
+    </div>
+    <h3 class="font-display font-bold text-tanah-800 text-2xl mb-1">Pembayaran Berhasil!</h3>
+    <p class="font-sans text-tanah-400 text-sm mb-2">Terima kasih sudah makan di Warung Nusantara 🍛</p>
+    <p id="success-total" class="font-display font-bold text-batik-600 text-3xl mb-6">Rp 0</p>
+    <button onclick="finishPayment()" class="w-full bg-batik-500 hover:bg-batik-600 text-white font-sans font-semibold py-4 rounded-2xl transition-all hover:scale-[1.02]">
+      Selesai & Reset Struk
+    </button>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════════════════════
      JAVASCRIPT
@@ -625,15 +698,25 @@ window.addEventListener('scroll', () => {
 document.getElementById('menu-btn').addEventListener('click', () => {
   document.getElementById('mobile-menu').classList.toggle('hidden');
 });
-document.querySelectorAll('#mobile-menu a').forEach(a =>
-  a.addEventListener('click', () => document.getElementById('mobile-menu').classList.add('hidden'))
-);
 
 /* ── Reveal on scroll ────────────────────────────────── */
 const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); }});
+  entries.forEach(e => { 
+    if (e.isIntersecting) { 
+      e.target.classList.add('visible'); 
+      revealObserver.unobserve(e.target); 
+    }
+  });
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ══════════════════════════════════════════════════════
+   VARIABEL GLOBAL & STATE
+══════════════════════════════════════════════════════ */
+let selectedFiles = []; // Antrean file untuk diupload
+let currentFile = null;  // Untuk capture kamera tunggal
+let cartItems = [];     // Item di struk pesanan
+let lastResults = [];   // Simpan list hasil prediksi terbaru
 
 /* ══════════════════════════════════════════════════════
    TAB SWITCHING
@@ -652,34 +735,61 @@ function switchTab(tab) {
 }
 
 /* ══════════════════════════════════════════════════════
-   UPLOAD / FILE HANDLING
+   UPLOAD / MULTIPLE FILE HANDLING
 ══════════════════════════════════════════════════════ */
-let currentFile = null;
-
-function handleFile(file) {
-  if (!file) return;
-  currentFile = file;
-  const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById('preview-img').src = e.target.result;
-    document.getElementById('upload-preview').classList.remove('hidden');
-    document.getElementById('btn-predict-upload').classList.remove('hidden');
-  };
-  reader.readAsDataURL(file);
+function handleFiles(files) {
+  if (!files || files.length === 0) return;
+  const filesArray = Array.from(files);
+  selectedFiles = [...selectedFiles, ...filesArray];
+  renderPreviews();
 }
 
 function handleDrop(e) {
   e.preventDefault();
   document.getElementById('drop-zone').classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) handleFile(file);
+  const files = e.dataTransfer.files;
+  if (files.length > 0) handleFiles(files);
+}
+
+function renderPreviews() {
+  const container = document.getElementById('upload-preview');
+  const btnPredict = document.getElementById('btn-predict-upload');
+  const dropZone = document.getElementById('drop-zone');
+
+  if (selectedFiles.length === 0) {
+    container.classList.add('hidden');
+    btnPredict.classList.add('hidden');
+    return;
+  }
+
+  container.classList.remove('hidden');
+  btnPredict.classList.remove('hidden');
+  btnPredict.innerHTML = `<i data-lucide="scan-line" class="w-4 h-4"></i> Analisa ${selectedFiles.length} Gambar`;
+
+  container.innerHTML = `
+    <div class="grid grid-cols-3 gap-3 mb-4">
+      ${selectedFiles.map((file, idx) => `
+        <div class="relative group aspect-square">
+          <img src="${URL.createObjectURL(file)}" class="w-full h-full object-cover rounded-xl border border-batik-200 shadow-sm" />
+          <button onclick="removeFile(${idx})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors">
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  lucide.createIcons();
+}
+
+function removeFile(idx) {
+  selectedFiles.splice(idx, 1);
+  renderPreviews();
+  if (selectedFiles.length === 0) resetResult();
 }
 
 function clearUpload() {
-  currentFile = null;
-  document.getElementById('preview-img').src = '';
-  document.getElementById('upload-preview').classList.add('hidden');
-  document.getElementById('btn-predict-upload').classList.add('hidden');
+  selectedFiles = [];
+  renderPreviews();
   resetResult();
 }
 
@@ -701,8 +811,7 @@ async function startCamera() {
 
 function stopCamera() {
   if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-  const feed = document.getElementById('camera-feed');
-  feed.srcObject = null;
+  document.getElementById('camera-feed').srcObject = null;
   document.getElementById('btn-cam-start').classList.remove('hidden');
   document.getElementById('btn-capture').classList.add('hidden');
 }
@@ -710,7 +819,7 @@ function stopCamera() {
 function captureFrame() {
   const video  = document.getElementById('camera-feed');
   const canvas = document.getElementById('capture-canvas');
-  canvas.width  = video.videoWidth  || 640;
+  canvas.width  = video.videoWidth || 640;
   canvas.height = video.videoHeight || 480;
   canvas.getContext('2d').drawImage(video, 0, 0);
   canvas.toBlob(blob => {
@@ -721,36 +830,96 @@ function captureFrame() {
 }
 
 /* ══════════════════════════════════════════════════════
-   PREDICTION
+   PREDICTION (CORE LOGIC)
 ══════════════════════════════════════════════════════ */
-let lastResult = null;
-
 async function predict(source) {
-  if (!currentFile) return;
-  showResultState('loading');
+  let filesToUpload = (source === 'upload') ? selectedFiles : [currentFile];
+  if (filesToUpload.length === 0) return;
 
+  showResultState('loading');
   const formData = new FormData();
-  formData.append('file', currentFile);
+  filesToUpload.forEach(file => formData.append('files', file));
 
   try {
-    const res  = await fetch('/predict', { method: 'POST', body: formData });
+    const res = await fetch('/predict', { method: 'POST', body: formData });
     if (!res.ok) throw new Error(`Server error ${res.status}`);
-    const data = await res.json();
-    lastResult = data;
-    showPrediction(data);
+    
+    const results = await res.json(); 
+    lastResults = results; // Simpan semua hasil deteksi
+    
+    showMultiplePredictions(results);
+    
+    // Otomatis masukkan SEMUA hasil ke struk
+    results.forEach(item => {
+      cartItems.push({ label: item.label, price: item.price });
+    });
+    
+    renderStruk();
+    
+    if (source === 'upload') {
+      selectedFiles = [];
+      renderPreviews();
+    }
   } catch (err) {
     showResultState('idle');
     alert('Prediksi gagal: ' + err.message);
   }
 }
 
-function showPrediction(data) {
+// Fungsi modifikasi untuk menampilkan list banyak gambar yang terdeteksi
+function showMultiplePredictions(results) {
   showResultState('success');
-  document.getElementById('result-img').src    = `data:image/jpeg;base64,${data.image_b64}`;
-  document.getElementById('result-label').textContent = data.label;
-  document.getElementById('result-conf').textContent  = `${data.confidence}%`;
-  document.getElementById('conf-bar').style.width     = `${data.confidence}%`;
-  document.getElementById('result-price').textContent = `Rp ${data.price.toLocaleString('id-ID')}`;
+  const container = document.getElementById('result-success');
+  
+  container.innerHTML = `
+    <div class="w-full space-y-4 max-h-[400px] overflow-y-auto pr-2">
+      ${results.map(data => `
+        <div class="flex items-center gap-4 bg-batik-50 p-3 rounded-2xl border border-batik-100">
+          <img src="data:image/jpeg;base64,${data.image_b64}" class="w-16 h-16 object-cover rounded-xl shadow-sm" />
+          <div class="flex-1 text-left">
+            <p class="text-[10px] uppercase tracking-widest text-batik-500 font-bold">Terdeteksi</p>
+            <h4 class="font-display font-bold text-tanah-800">${data.label}</h4>
+            <div class="w-full h-1 bg-batik-200 rounded-full mt-1">
+              <div class="h-full bg-batik-500 rounded-full" style="width: ${data.confidence}%"></div>
+            </div>
+          </div>
+          <div class="text-right">
+             <p class="font-bold text-batik-600 text-sm">Rp ${data.price.toLocaleString('id-ID')}</p>
+             <p class="text-[10px] text-tanah-400">${data.confidence}%</p>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <button id="btn-add-again" onclick="addToCartManual()" class="mt-4 w-full bg-tanah-300 text-tanah-500 cursor-not-allowed font-sans font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-all text-sm" disabled>
+      <i data-lucide="shopping-basket" class="w-4 h-4"></i> Sudah Ditambahkan ke Struk
+    </button>
+  `;
+  lucide.createIcons();
+}
+
+// Support untuk tombol manual jika user ingin tambah item yang sama lagi
+function addToCartManual() {
+  if (lastResults.length === 0) return;
+  lastResults.forEach(item => cartItems.push({ label: item.label, price: item.price }));
+  renderStruk();
+  disableAddAgainBtn();
+}
+
+function disableAddAgainBtn() {
+  const btn = document.getElementById('btn-add-again');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.className = 'mt-4 w-full bg-tanah-300 text-tanah-500 cursor-not-allowed font-sans font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-all text-sm';
+  btn.innerHTML = '<i data-lucide="shopping-basket" class="w-4 h-4"></i> Sudah Ditambahkan ke Struk';
+  lucide.createIcons();
+}
+
+function enableAddAgainBtn() {
+  const btn = document.getElementById('btn-add-again');
+  if (!btn) return;
+  btn.disabled = false;
+  btn.className = 'mt-4 w-full bg-tanah-700 hover:bg-tanah-800 text-white font-sans font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-all text-sm';
+  btn.innerHTML = '<i data-lucide="shopping-basket" class="w-4 h-4"></i> Tambah Lagi ke Struk';
   lucide.createIcons();
 }
 
@@ -759,31 +928,24 @@ function showResultState(state) {
     document.getElementById(`result-${s}`).classList.toggle('hidden', s !== state)
   );
 }
-function resetResult() { showResultState('idle'); lastResult = null; }
+
+function resetResult() { 
+  showResultState('idle'); 
+  lastResults = []; 
+}
 
 /* ══════════════════════════════════════════════════════
    STRUK / CART
 ══════════════════════════════════════════════════════ */
-let cartItems = [];
-
-function addToCart() {
-  if (!lastResult) return;
-  cartItems.push({ label: lastResult.label, price: lastResult.price });
-  renderStruk();
-}
-
 function renderStruk() {
   const container = document.getElementById('struk-items');
-  const emptyMsg  = document.getElementById('struk-empty');
+  const totalDisplay = document.getElementById('struk-total');
 
   if (cartItems.length === 0) {
-    container.innerHTML = '';
-    container.appendChild(emptyMsg);
-    emptyMsg.classList.remove('hidden');
-    document.getElementById('struk-total').textContent = 'Rp 0';
+    container.innerHTML = '<p id="struk-empty" class="font-sans text-tanah-300 text-sm py-2 italic">Belum ada pesanan…</p>';
+    totalDisplay.textContent = 'Rp 0';
     return;
   }
-  emptyMsg.classList.add('hidden');
 
   const counts = {};
   cartItems.forEach(item => {
@@ -802,16 +964,17 @@ function renderStruk() {
   `).join('');
 
   const total = cartItems.reduce((s, i) => s + i.price, 0);
-  document.getElementById('struk-total').textContent = `Rp ${total.toLocaleString('id-ID')}`;
+  totalDisplay.textContent = `Rp ${total.toLocaleString('id-ID')}`;
 }
 
 function clearStruk() {
   cartItems = [];
   renderStruk();
+  enableAddAgainBtn();
 }
 
 /* ══════════════════════════════════════════════════════
-   GALLERY DATA & RENDER
+   GALLERY DATA & RENDER (TETAP AMAN)
 ══════════════════════════════════════════════════════ */
 const menuData = [
   { name: 'Nasi Goreng',  price: 13000, category: 'nasi',  emoji: '🍳', img: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&q=80', desc: 'Nasi goreng spesial dengan telur mata sapi' },
@@ -847,7 +1010,7 @@ function filterMenu(cat) {
 }
 
 function renderGallery() {
-  const grid    = document.getElementById('gallery-grid');
+  const grid = document.getElementById('gallery-grid');
   const filtered = currentFilter === 'all' ? menuData : menuData.filter(m => m.category === currentFilter);
 
   grid.innerHTML = filtered.map(item => `
@@ -870,23 +1033,17 @@ function renderGallery() {
 }
 
 function quickScan(name, price) {
-  // Scroll to prediksi section and simulate result
   document.getElementById('prediksi').scrollIntoView({ behavior: 'smooth' });
   setTimeout(() => {
-    lastResult = { label: name, confidence: 100, price, image_b64: '' };
-    document.getElementById('result-img').src    = '';
-    document.getElementById('result-label').textContent = name;
-    document.getElementById('result-conf').textContent  = '100%';
-    document.getElementById('conf-bar').style.width     = '100%';
-    document.getElementById('result-price').textContent = `Rp ${price.toLocaleString('id-ID')}`;
-    showResultState('success');
-    lucide.createIcons();
+    const fakeResult = { label: name, confidence: 100, price, image_b64: '' };
+    // Simulasi multiple result (walau cuma 1 item dari galeri)
+    showMultiplePredictions([fakeResult]);
+    cartItems.push({ label: name, price });
+    renderStruk();
   }, 600);
 }
 
-/* ══════════════════════════════════════════════════════
-   CONTACT FORM
-══════════════════════════════════════════════════════ */
+/* ── Contact Form ────────────────────────────────────── */
 function submitContact() {
   document.getElementById('contact-form').classList.add('hidden');
   document.getElementById('contact-success').classList.remove('hidden');
@@ -895,6 +1052,40 @@ function submitContact() {
 function resetContact() {
   document.getElementById('contact-form').classList.remove('hidden');
   document.getElementById('contact-success').classList.add('hidden');
+}
+
+/* ── Payment ─────────────────────────────────────────── */
+
+function openPaymentModal() {
+  if (cartItems.length === 0) {
+    alert('Struk masih kosong! Tambahkan pesanan dulu.');
+    return;
+  }
+  const total = cartItems.reduce((s, i) => s + i.price, 0);
+  const formatted = `Rp ${total.toLocaleString('id-ID')}`;
+  document.getElementById('payment-total-modal').textContent = formatted;
+  document.getElementById('payment-total-step').textContent = formatted;
+  document.getElementById('success-total').textContent = formatted;
+  document.getElementById('payment-modal').classList.remove('hidden');
+  lucide.createIcons();
+}
+
+function closePaymentModal() {
+  document.getElementById('payment-modal').classList.add('hidden');
+}
+
+function confirmPayment() {
+  closePaymentModal();
+  document.getElementById('payment-success-modal').classList.remove('hidden');
+  lucide.createIcons();
+}
+
+function finishPayment() {
+  document.getElementById('payment-success-modal').classList.add('hidden');
+  cartItems = [];
+  renderStruk();
+  resetResult();
+  enableAddAgainBtn();
 }
 
 /* ── Initial render ─────────────────────────────────── */
