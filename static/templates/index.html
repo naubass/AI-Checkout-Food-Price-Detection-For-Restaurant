@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warung Nusantara — Kantin Digital</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            batik: {
+              50:  '#fdf8f0',
+              100: '#f9edda',
+              200: '#f0d4a8',
+              300: '#e5b572',
+              400: '#d9933e',
+              500: '#c97a22',
+              600: '#a85f18',
+              700: '#854815',
+              800: '#5e3211',
+              900: '#3d2009',
+            },
+            tanah: {
+              50:  '#f9f5f0',
+              100: '#ede3d5',
+              200: '#d9c4a8',
+              300: '#c0a07a',
+              400: '#a87f54',
+              500: '#8e6338',
+              600: '#6e4b28',
+              700: '#52371c',
+              800: '#362312',
+              900: '#1e1209',
+            },
+            hijau: {
+              400: '#4ade80',
+              500: '#16a34a',
+              600: '#15803d',
+            },
+          },
+          fontFamily: {
+            display: ['"Playfair Display"', 'serif'],
+            lora:    ['Lora', 'serif'],
+            sans:    ['"DM Sans"', 'sans-serif'],
+          },
+          backgroundImage: {
+            'batik-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c97a22' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ── Global ── */
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: #fdf8f0;
+      color: #3d2009;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f9edda; }
+    ::-webkit-scrollbar-thumb { background: #c97a22; border-radius: 3px; }
+
+    /* ── Navbar ── */
+    #navbar {
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(253,248,240,0.97);
+      box-shadow: 0 2px 24px rgba(61,32,9,0.10);
+    }
+
+    /* ── Hero ── */
+    .hero-bg {
+      background:
+        linear-gradient(160deg, rgba(61,32,9,0.70) 0%, rgba(168,95,24,0.45) 60%, rgba(253,248,240,0.10) 100%),
+        url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1600&q=80') center/cover no-repeat;
+      min-height: 100vh;
+    }
+
+    /* ── Ornament lines ── */
+    .ornament::before, .ornament::after {
+      content: '';
+      display: block;
+      height: 2px;
+      width: 60px;
+      background: #c97a22;
+      margin: 0 auto;
+    }
+    .ornament {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .ornament span {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: #c97a22;
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* ── Section title underline ── */
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 64px;
+      height: 3px;
+      background: linear-gradient(90deg, #c97a22, #e5b572);
+      margin: 12px auto 0;
+      border-radius: 2px;
+    }
+
+    /* ── Drop zone ── */
+    #drop-zone {
+      transition: border-color 0.25s, background 0.25s;
+    }
+    #drop-zone.drag-over {
+      border-color: #c97a22;
+      background: #f9edda;
+    }
+
+    /* ── Gallery cards ── */
+    .food-card {
+      transition: transform 0.35s cubic-bezier(.22,.68,0,1.2), box-shadow 0.35s ease;
+    }
+    .food-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 48px rgba(61,32,9,0.18);
+    }
+
+    /* ── Fade-in on scroll ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Spinner ── */
+    .spinner {
+      border: 3px solid #f0d4a8;
+      border-top-color: #c97a22;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 0.75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Camera pulse ring ── */
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(201,122,34,0.5); }
+      70%  { box-shadow: 0 0 0 14px rgba(201,122,34,0); }
+      100% { box-shadow: 0 0 0 0 rgba(201,122,34,0); }
+    }
+    .camera-active { animation: pulse-ring 1.8s ease-out infinite; }
+
+    /* ── Wavy divider ── */
+    .wave-divider svg { display: block; }
+  </style>
+</head>
+<body class="antialiased">
+
+<!-- ══════════════════════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+
+    <!-- Brand -->
+    <a href="#" class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-full bg-batik-500 flex items-center justify-center shadow-md">
+        <span class="text-white text-lg leading-none">🍛</span>
+      </div>
+      <div class="leading-tight">
+        <p class="font-display font-bold text-batik-800 text-lg leading-none">Warung</p>
+        <p class="font-display font-bold text-batik-500 text-lg leading-none">Nusantara</p>
+      </div>
+    </a>
+
+    <!-- Desktop links -->
+    <ul class="hidden md:flex items-center gap-8 font-sans text-sm font-medium text-tanah-700">
+      <li><a href="#hero"    class="hover:text-batik-500 transition-colors">Beranda</a></li>
+      <li><a href="#prediksi" class="hover:text-batik-500 transition-colors">Prediksi</a></li>
+      <li><a href="#gallery" class="hover:text-batik-500 transition-colors">Galeri</a></li>
+      <li><a href="#contact" class="hover:text-batik-500 transition-colors">Kontak</a></li>
+    </ul>
+
+    <!-- CTA -->
+    <a href="#prediksi"
+       class="hidden md:inline-flex items-center gap-2 bg-batik-500 text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-batik-600 transition-colors shadow-md">
+      <i data-lucide="scan-line" class="w-4 h-4"></i>
+      Coba Sekarang
+    </a>
+
+    <!-- Mobile hamburger -->
+    <button id="menu-btn" class="md:hidden p-2 rounded-lg hover:bg-batik-100 transition-colors">
+      <i data-lucide="menu" class="w-5 h-5 text-batik-700"></i>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden mt-3 bg-batik-50 border border-batik-100 rounded-2xl shadow-lg overflow-hidden">
+    <ul class="flex flex-col py-2 font-sans text-sm font-medium text-tanah-700">
+      <li><a href="#hero"     class="block px-5 py-3 hover:bg-batik-100">Beranda</a></li>
+      <li><a href="#prediksi" class="block px-5 py-3 hover:bg-batik-100">Prediksi</a></li>
+      <li><a href="#gallery"  class="block px-5 py-3 hover:bg-batik-100">Galeri</a></li>
+      <li><a href="#contact"  class="block px-5 py-3 hover:bg-batik-100">Kontak</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════ -->
+<section id="hero" class="hero-bg relative flex items-center justify-center overflow-hidden">
+  <!-- Batik pattern overlay -->
+  <div class="absolute inset-0 bg-batik-pattern opacity-20 pointer-events-none"></div>
+
+  <div class="relative z-10 text-center px-6 py-32 max-w-4xl mx-auto">
+
+    <div class="ornament mb-8">
+      <span>Cita Rasa Nusantara</span>
+    </div>
+
+    <h1 class="font-display font-black text-white text-5xl md:text-7xl leading-tight mb-6 drop-shadow-lg">
+      Selamat Datang di<br/>
+      <span class="text-batik-300 italic">Warung Nusantara</span>
+    </h1>
+
+    <p class="font-lora italic text-batik-100 text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
+      Nikmati kelezatan masakan Indonesia autentik — kini dengan teknologi pintar untuk kenali setiap hidangan favoritmu.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="#prediksi"
+         class="flex items-center gap-2.5 bg-batik-500 hover:bg-batik-600 text-white font-sans font-medium px-8 py-4 rounded-full shadow-xl transition-all hover:scale-105">
+        <i data-lucide="scan-line" class="w-5 h-5"></i>
+        Prediksi Makanan
+      </a>
+      <a href="#gallery"
+         class="flex items-center gap-2.5 bg-white/15 hover:bg-white/25 backdrop-blur text-white font-sans font-medium px-8 py-4 rounded-full border border-white/30 transition-all hover:scale-105">
+        <i data-lucide="utensils" class="w-5 h-5"></i>
+        Lihat Menu
+      </a>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="mt-16 grid grid-cols-3 gap-6 max-w-md mx-auto">
+      <div class="text-center">
+        <p class="font-display font-bold text-white text-3xl">13+</p>
+        <p class="font-sans text-batik-200 text-xs mt-1">Menu Pilihan</p>
+      </div>
+      <div class="text-center border-x border-white/20">
+        <p class="font-display font-bold text-white text-3xl">99%</p>
+        <p class="font-sans text-batik-200 text-xs mt-1">Kepuasan</p>
+      </div>
+      <div class="text-center">
+        <p class="font-display font-bold text-white text-3xl">AI</p>
+        <p class="font-sans text-batik-200 text-xs mt-1">Teknologi</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+    <i data-lucide="chevrons-down" class="w-7 h-7 text-batik-300"></i>
+  </div>
+</section>
+
+
+<!-- Wave divider -->
+<div class="wave-divider -mt-1 bg-batik-50">
+  <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="w-full h-16">
+    <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#fdf8f0"/>
+  </svg>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     PREDIKSI
+══════════════════════════════════════════════════════ -->
+<section id="prediksi" class="py-24 px-6 bg-gradient-to-b from-batik-50 to-tanah-50">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Heading -->
+    <div class="text-center mb-14 reveal">
+      <p class="font-lora italic text-batik-500 mb-2">Teknologi Pintar</p>
+      <h2 class="font-display font-bold text-tanah-800 text-4xl md:text-5xl section-title">
+        Prediksi Harga Makanan
+      </h2>
+      <p class="font-sans text-tanah-500 mt-5 max-w-xl mx-auto text-sm leading-relaxed">
+        Upload foto atau gunakan kamera untuk mendeteksi jenis makanan dan mengetahui harganya secara instan.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-10">
+
+      <!-- ── Upload / Camera panel ── -->
+      <div class="bg-white rounded-3xl shadow-xl shadow-tanah-100 overflow-hidden border border-batik-100 reveal">
+        <!-- Tabs -->
+        <div class="flex border-b border-batik-100">
+          <button id="tab-upload" onclick="switchTab('upload')"
+            class="tab-btn flex-1 py-4 text-sm font-sans font-medium flex items-center justify-center gap-2 text-batik-500 border-b-2 border-batik-500">
+            <i data-lucide="image-up" class="w-4 h-4"></i> Upload Foto
+          </button>
+          <button id="tab-camera" onclick="switchTab('camera')"
+            class="tab-btn flex-1 py-4 text-sm font-sans font-medium flex items-center justify-center gap-2 text-tanah-400 border-b-2 border-transparent hover:text-batik-400 transition-colors">
+            <i data-lucide="camera" class="w-4 h-4"></i> Kamera
+          </button>
+        </div>
+
+        <!-- Upload panel -->
+        <div id="panel-upload" class="p-6">
+          <div id="drop-zone"
+            class="border-2 border-dashed border-batik-300 rounded-2xl p-10 text-center cursor-pointer select-none hover:border-batik-500 hover:bg-batik-50 transition-all"
+            onclick="document.getElementById('file-input').click()"
+            ondragover="event.preventDefault(); this.classList.add('drag-over')"
+            ondragleave="this.classList.remove('drag-over')"
+            ondrop="handleDrop(event)">
+            <div class="w-16 h-16 bg-batik-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i data-lucide="upload-cloud" class="w-8 h-8 text-batik-400"></i>
+            </div>
+            <p class="font-lora font-semibold text-tanah-700 mb-1">Seret & lepas foto di sini</p>
+            <p class="font-sans text-tanah-400 text-xs">atau klik untuk memilih file</p>
+            <p class="font-sans text-tanah-300 text-xs mt-2">PNG, JPG, WEBP — Maks. 10 MB</p>
+          </div>
+          <input id="file-input" type="file" accept="image/*" class="hidden" onchange="handleFile(this.files[0])"/>
+
+          <!-- Preview -->
+          <div id="upload-preview" class="hidden mt-4 relative">
+            <img id="preview-img" src="" alt="preview" class="w-full rounded-2xl object-cover max-h-52"/>
+            <button onclick="clearUpload()"
+              class="absolute top-2 right-2 bg-white/80 backdrop-blur rounded-full p-1.5 shadow hover:bg-white transition-colors">
+              <i data-lucide="x" class="w-4 h-4 text-tanah-600"></i>
+            </button>
+          </div>
+
+          <button id="btn-predict-upload" onclick="predict('upload')"
+            class="hidden mt-4 w-full bg-batik-500 hover:bg-batik-600 text-white font-sans font-medium py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02]">
+            <i data-lucide="scan-line" class="w-4 h-4"></i>
+            Analisa Sekarang
+          </button>
+        </div>
+
+        <!-- Camera panel -->
+        <div id="panel-camera" class="hidden p-6">
+          <div class="relative rounded-2xl overflow-hidden bg-tanah-900 aspect-video">
+            <video id="camera-feed" autoplay playsinline class="w-full h-full object-cover"></video>
+            <!-- Aim frame overlay -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div class="w-40 h-40 border-2 border-batik-400/60 rounded-2xl shadow-lg"></div>
+            </div>
+          </div>
+
+          <div class="flex gap-3 mt-4">
+            <button id="btn-cam-start" onclick="startCamera()"
+              class="flex-1 bg-tanah-700 hover:bg-tanah-800 text-white font-sans font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-all text-sm">
+              <i data-lucide="video" class="w-4 h-4"></i> Nyalakan Kamera
+            </button>
+            <button id="btn-capture" onclick="captureFrame()"
+              class="hidden flex-1 bg-batik-500 hover:bg-batik-600 text-white font-sans font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-all text-sm camera-active">
+              <i data-lucide="aperture" class="w-4 h-4"></i> Foto & Prediksi
+            </button>
+          </div>
+
+          <!-- Hidden canvas for capture -->
+          <canvas id="capture-canvas" class="hidden"></canvas>
+        </div>
+      </div><!-- end left panel -->
+
+
+      <!-- ── Result panel ── -->
+      <div class="flex flex-col gap-6 reveal">
+
+        <!-- Result card -->
+        <div id="result-card"
+          class="bg-white rounded-3xl shadow-xl shadow-tanah-100 border border-batik-100 p-8 flex flex-col items-center justify-center text-center min-h-[260px]">
+
+          <!-- Idle state -->
+          <div id="result-idle" class="flex flex-col items-center gap-3">
+            <div class="w-20 h-20 bg-batik-50 rounded-full flex items-center justify-center">
+              <i data-lucide="scan-search" class="w-9 h-9 text-batik-300"></i>
+            </div>
+            <p class="font-lora italic text-tanah-400 text-sm">Hasil prediksi akan muncul di sini</p>
+          </div>
+
+          <!-- Loading state -->
+          <div id="result-loading" class="hidden flex flex-col items-center gap-4">
+            <div class="spinner"></div>
+            <p class="font-sans text-tanah-400 text-sm">Menganalisa gambar…</p>
+          </div>
+
+          <!-- Success state -->
+          <div id="result-success" class="hidden w-full">
+            <div class="relative w-32 h-32 mx-auto mb-4">
+              <img id="result-img" src="" alt="" class="w-full h-full object-cover rounded-2xl shadow-md" />
+            </div>
+            <p class="font-sans text-batik-500 text-xs uppercase tracking-widest mb-1">Terdeteksi</p>
+            <h3 id="result-label" class="font-display font-bold text-tanah-800 text-3xl mb-1">—</h3>
+            <div class="flex items-center justify-center gap-2 mb-5">
+              <div id="conf-bar-wrap" class="w-24 h-1.5 bg-batik-100 rounded-full overflow-hidden">
+                <div id="conf-bar" class="h-full bg-batik-400 rounded-full" style="width:0%"></div>
+              </div>
+              <p id="result-conf" class="font-sans text-tanah-400 text-xs">0%</p>
+            </div>
+            <div class="bg-batik-50 rounded-2xl px-6 py-4 inline-block">
+              <p class="font-sans text-tanah-500 text-xs mb-1">Harga Estimasi</p>
+              <p id="result-price" class="font-display font-bold text-batik-600 text-3xl">Rp 0</p>
+            </div>
+
+            <button onclick="addToCart()"
+              class="mt-5 w-full bg-tanah-700 hover:bg-tanah-800 text-white font-sans font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] text-sm">
+              <i data-lucide="shopping-basket" class="w-4 h-4"></i>
+              Tambah ke Struk
+            </button>
+          </div>
+        </div><!-- /result-card -->
+
+
+        <!-- Receipt / Struk -->
+        <div id="struk-box" class="bg-white rounded-3xl shadow-xl shadow-tanah-100 border border-batik-100 overflow-hidden">
+          <div class="bg-batik-500 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i data-lucide="receipt" class="w-5 h-5 text-batik-100"></i>
+              <h4 class="font-display font-bold text-white text-lg">Struk Pesanan</h4>
+            </div>
+            <button onclick="clearStruk()" class="text-batik-200 hover:text-white transition-colors text-xs font-sans">Hapus</button>
+          </div>
+          <div class="px-6 py-5">
+            <div id="struk-items" class="divide-y divide-batik-50 min-h-[40px]">
+              <p id="struk-empty" class="font-sans text-tanah-300 text-sm py-2 italic">Belum ada pesanan…</p>
+            </div>
+            <div class="border-t-2 border-dashed border-batik-200 mt-4 pt-4 flex justify-between items-center">
+              <span class="font-lora font-semibold text-tanah-700">Total</span>
+              <span id="struk-total" class="font-display font-bold text-batik-600 text-2xl">Rp 0</span>
+            </div>
+            <p class="font-lora italic text-tanah-400 text-xs text-center mt-3">🍛 Terima kasih, selamat makan!</p>
+          </div>
+        </div><!-- /struk-box -->
+
+      </div><!-- end right column -->
+    </div><!-- end grid -->
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     FOOD GALLERY
+══════════════════════════════════════════════════════ -->
+<section id="gallery" class="py-24 px-6 bg-tanah-50 relative overflow-hidden">
+  <!-- Decorative circles -->
+  <div class="absolute -top-32 -right-32 w-96 h-96 bg-batik-100 rounded-full opacity-40 blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-batik-200 rounded-full opacity-30 blur-3xl pointer-events-none"></div>
+
+  <div class="max-w-6xl mx-auto relative">
+    <div class="text-center mb-14 reveal">
+      <p class="font-lora italic text-batik-500 mb-2">Pilihan Kami</p>
+      <h2 class="font-display font-bold text-tanah-800 text-4xl md:text-5xl section-title">
+        Galeri Makanan Indonesia
+      </h2>
+      <p class="font-sans text-tanah-400 mt-5 text-sm max-w-md mx-auto">
+        Dari Sabang sampai Merauke, kami hadirkan cita rasa terbaik nusantara.
+      </p>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="flex flex-wrap justify-center gap-3 mb-10 reveal">
+      <button onclick="filterMenu('all')"   class="filter-btn active-filter font-sans text-sm px-5 py-2 rounded-full border border-batik-300 text-batik-600 bg-batik-50 transition-all">Semua</button>
+      <button onclick="filterMenu('nasi')"  class="filter-btn font-sans text-sm px-5 py-2 rounded-full border border-tanah-200 text-tanah-500 hover:border-batik-300 hover:text-batik-600 transition-all">Nasi</button>
+      <button onclick="filterMenu('lauk')"  class="filter-btn font-sans text-sm px-5 py-2 rounded-full border border-tanah-200 text-tanah-500 hover:border-batik-300 hover:text-batik-600 transition-all">Lauk</button>
+      <button onclick="filterMenu('mie')"   class="filter-btn font-sans text-sm px-5 py-2 rounded-full border border-tanah-200 text-tanah-500 hover:border-batik-300 hover:text-batik-600 transition-all">Mie &amp; Sup</button>
+      <button onclick="filterMenu('barat')" class="filter-btn font-sans text-sm px-5 py-2 rounded-full border border-tanah-200 text-tanah-500 hover:border-batik-300 hover:text-batik-600 transition-all">Western</button>
+    </div>
+
+    <!-- Grid -->
+    <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+      <!-- Cards generated by JS -->
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     CONTACT
+══════════════════════════════════════════════════════ -->
+<section id="contact" class="py-24 px-6 bg-gradient-to-br from-tanah-800 to-batik-900 relative overflow-hidden">
+  <!-- Batik overlay -->
+  <div class="absolute inset-0 bg-batik-pattern opacity-10 pointer-events-none"></div>
+
+  <div class="max-w-5xl mx-auto relative">
+    <div class="text-center mb-14 reveal">
+      <p class="font-lora italic text-batik-300 mb-2">Hubungi Kami</p>
+      <h2 class="font-display font-bold text-white text-4xl md:text-5xl">
+        Contact <span class="text-batik-300 italic">Us</span>
+      </h2>
+      <p class="font-sans text-tanah-300 mt-4 text-sm max-w-md mx-auto">
+        Ada pertanyaan atau saran? Kami senang mendengar dari Anda.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-5 gap-10">
+
+      <!-- Info column -->
+      <div class="md:col-span-2 flex flex-col gap-6 reveal">
+        <div class="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+          <div class="w-10 h-10 bg-batik-500/30 rounded-xl flex items-center justify-center mb-4">
+            <i data-lucide="map-pin" class="w-5 h-5 text-batik-300"></i>
+          </div>
+          <h4 class="font-lora font-semibold text-white mb-1">Lokasi</h4>
+          <p class="font-sans text-tanah-300 text-sm">Jl. Pahlawan No. 17, Jakarta Selatan, DKI Jakarta 12345</p>
+        </div>
+
+        <div class="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+          <div class="w-10 h-10 bg-batik-500/30 rounded-xl flex items-center justify-center mb-4">
+            <i data-lucide="clock-4" class="w-5 h-5 text-batik-300"></i>
+          </div>
+          <h4 class="font-lora font-semibold text-white mb-1">Jam Operasional</h4>
+          <p class="font-sans text-tanah-300 text-sm">Senin – Sabtu: 07.00 – 21.00 WIB</p>
+          <p class="font-sans text-tanah-300 text-sm">Minggu: 08.00 – 18.00 WIB</p>
+        </div>
+
+        <div class="bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10">
+          <div class="w-10 h-10 bg-batik-500/30 rounded-xl flex items-center justify-center mb-4">
+            <i data-lucide="phone" class="w-5 h-5 text-batik-300"></i>
+          </div>
+          <h4 class="font-lora font-semibold text-white mb-1">Telepon &amp; Email</h4>
+          <p class="font-sans text-tanah-300 text-sm">+62 21 1234 5678</p>
+          <p class="font-sans text-tanah-300 text-sm">info@warungnusantara.id</p>
+        </div>
+      </div>
+
+      <!-- Form column -->
+      <div class="md:col-span-3 bg-white/5 backdrop-blur rounded-3xl border border-white/10 p-8 reveal">
+        <div id="contact-form" class="flex flex-col gap-5">
+          <div class="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label class="font-sans text-tanah-300 text-xs uppercase tracking-wider mb-2 block">Nama Lengkap</label>
+              <input type="text" placeholder="Budi Santoso"
+                class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-tanah-500 font-sans text-sm focus:outline-none focus:border-batik-400 transition-colors" />
+            </div>
+            <div>
+              <label class="font-sans text-tanah-300 text-xs uppercase tracking-wider mb-2 block">Email</label>
+              <input type="email" placeholder="budi@email.com"
+                class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-tanah-500 font-sans text-sm focus:outline-none focus:border-batik-400 transition-colors" />
+            </div>
+          </div>
+          <div>
+            <label class="font-sans text-tanah-300 text-xs uppercase tracking-wider mb-2 block">Subjek</label>
+            <input type="text" placeholder="Saran menu baru…"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-tanah-500 font-sans text-sm focus:outline-none focus:border-batik-400 transition-colors" />
+          </div>
+          <div>
+            <label class="font-sans text-tanah-300 text-xs uppercase tracking-wider mb-2 block">Pesan</label>
+            <textarea rows="5" placeholder="Tulis pesan Anda di sini…"
+              class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-tanah-500 font-sans text-sm focus:outline-none focus:border-batik-400 transition-colors resize-none"></textarea>
+          </div>
+          <button onclick="submitContact()"
+            class="w-full bg-batik-500 hover:bg-batik-400 text-white font-sans font-medium py-4 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02]">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            Kirim Pesan
+          </button>
+        </div>
+        <!-- Success message (hidden by default) -->
+        <div id="contact-success" class="hidden flex flex-col items-center justify-center h-full py-10 gap-4">
+          <div class="w-20 h-20 bg-hijau-500/20 rounded-full flex items-center justify-center">
+            <i data-lucide="check-circle-2" class="w-10 h-10 text-hijau-400"></i>
+          </div>
+          <h3 class="font-display font-bold text-white text-2xl">Pesan Terkirim!</h3>
+          <p class="font-sans text-tanah-300 text-sm text-center">Terima kasih telah menghubungi kami. Kami akan membalas dalam 1×24 jam.</p>
+          <button onclick="resetContact()" class="mt-2 font-sans text-batik-300 text-sm hover:underline">Kirim pesan lain</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════ -->
+<footer class="bg-tanah-900 py-10 px-6 text-center">
+  <p class="font-display font-bold text-batik-400 text-xl mb-1">Warung Nusantara</p>
+  <p class="font-sans text-tanah-500 text-xs">© 2025 Warung Nusantara — Dibuat dengan ❤️ untuk cita rasa Indonesia</p>
+</footer>
+
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════ -->
+<script>
+/* ── Init Lucide Icons ───────────────────────────────── */
+lucide.createIcons();
+
+/* ── Navbar scroll ───────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+/* ── Mobile menu ─────────────────────────────────────── */
+document.getElementById('menu-btn').addEventListener('click', () => {
+  document.getElementById('mobile-menu').classList.toggle('hidden');
+});
+document.querySelectorAll('#mobile-menu a').forEach(a =>
+  a.addEventListener('click', () => document.getElementById('mobile-menu').classList.add('hidden'))
+);
+
+/* ── Reveal on scroll ────────────────────────────────── */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); }});
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ══════════════════════════════════════════════════════
+   TAB SWITCHING
+══════════════════════════════════════════════════════ */
+function switchTab(tab) {
+  const tabs = { upload: 'panel-upload', camera: 'panel-camera' };
+  Object.keys(tabs).forEach(t => {
+    document.getElementById(tabs[t]).classList.toggle('hidden', t !== tab);
+    const btn = document.getElementById(`tab-${t}`);
+    btn.classList.toggle('text-batik-500', t === tab);
+    btn.classList.toggle('border-batik-500', t === tab);
+    btn.classList.toggle('text-tanah-400', t !== tab);
+    btn.classList.toggle('border-transparent', t !== tab);
+  });
+  if (tab !== 'camera') stopCamera();
+}
+
+/* ══════════════════════════════════════════════════════
+   UPLOAD / FILE HANDLING
+══════════════════════════════════════════════════════ */
+let currentFile = null;
+
+function handleFile(file) {
+  if (!file) return;
+  currentFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('preview-img').src = e.target.result;
+    document.getElementById('upload-preview').classList.remove('hidden');
+    document.getElementById('btn-predict-upload').classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) handleFile(file);
+}
+
+function clearUpload() {
+  currentFile = null;
+  document.getElementById('preview-img').src = '';
+  document.getElementById('upload-preview').classList.add('hidden');
+  document.getElementById('btn-predict-upload').classList.add('hidden');
+  resetResult();
+}
+
+/* ══════════════════════════════════════════════════════
+   CAMERA
+══════════════════════════════════════════════════════ */
+let stream = null;
+
+async function startCamera() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+    document.getElementById('camera-feed').srcObject = stream;
+    document.getElementById('btn-cam-start').classList.add('hidden');
+    document.getElementById('btn-capture').classList.remove('hidden');
+  } catch (err) {
+    alert('Tidak dapat mengakses kamera: ' + err.message);
+  }
+}
+
+function stopCamera() {
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  const feed = document.getElementById('camera-feed');
+  feed.srcObject = null;
+  document.getElementById('btn-cam-start').classList.remove('hidden');
+  document.getElementById('btn-capture').classList.add('hidden');
+}
+
+function captureFrame() {
+  const video  = document.getElementById('camera-feed');
+  const canvas = document.getElementById('capture-canvas');
+  canvas.width  = video.videoWidth  || 640;
+  canvas.height = video.videoHeight || 480;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  canvas.toBlob(blob => {
+    if (!blob) return;
+    currentFile = new File([blob], 'capture.jpg', { type: 'image/jpeg' });
+    predict('camera');
+  }, 'image/jpeg', 0.9);
+}
+
+/* ══════════════════════════════════════════════════════
+   PREDICTION
+══════════════════════════════════════════════════════ */
+let lastResult = null;
+
+async function predict(source) {
+  if (!currentFile) return;
+  showResultState('loading');
+
+  const formData = new FormData();
+  formData.append('file', currentFile);
+
+  try {
+    const res  = await fetch('/predict', { method: 'POST', body: formData });
+    if (!res.ok) throw new Error(`Server error ${res.status}`);
+    const data = await res.json();
+    lastResult = data;
+    showPrediction(data);
+  } catch (err) {
+    showResultState('idle');
+    alert('Prediksi gagal: ' + err.message);
+  }
+}
+
+function showPrediction(data) {
+  showResultState('success');
+  document.getElementById('result-img').src    = `data:image/jpeg;base64,${data.image_b64}`;
+  document.getElementById('result-label').textContent = data.label;
+  document.getElementById('result-conf').textContent  = `${data.confidence}%`;
+  document.getElementById('conf-bar').style.width     = `${data.confidence}%`;
+  document.getElementById('result-price').textContent = `Rp ${data.price.toLocaleString('id-ID')}`;
+  lucide.createIcons();
+}
+
+function showResultState(state) {
+  ['idle','loading','success'].forEach(s =>
+    document.getElementById(`result-${s}`).classList.toggle('hidden', s !== state)
+  );
+}
+function resetResult() { showResultState('idle'); lastResult = null; }
+
+/* ══════════════════════════════════════════════════════
+   STRUK / CART
+══════════════════════════════════════════════════════ */
+let cartItems = [];
+
+function addToCart() {
+  if (!lastResult) return;
+  cartItems.push({ label: lastResult.label, price: lastResult.price });
+  renderStruk();
+}
+
+function renderStruk() {
+  const container = document.getElementById('struk-items');
+  const emptyMsg  = document.getElementById('struk-empty');
+
+  if (cartItems.length === 0) {
+    container.innerHTML = '';
+    container.appendChild(emptyMsg);
+    emptyMsg.classList.remove('hidden');
+    document.getElementById('struk-total').textContent = 'Rp 0';
+    return;
+  }
+  emptyMsg.classList.add('hidden');
+
+  const counts = {};
+  cartItems.forEach(item => {
+    counts[item.label] = counts[item.label] || { price: item.price, qty: 0 };
+    counts[item.label].qty++;
+  });
+
+  container.innerHTML = Object.entries(counts).map(([label, d]) => `
+    <div class="flex justify-between items-center py-2.5">
+      <div>
+        <p class="font-sans font-medium text-tanah-700 text-sm">${label}</p>
+        <p class="font-sans text-tanah-400 text-xs">${d.qty}× @ Rp ${d.price.toLocaleString('id-ID')}</p>
+      </div>
+      <p class="font-lora font-semibold text-tanah-700 text-sm">Rp ${(d.qty * d.price).toLocaleString('id-ID')}</p>
+    </div>
+  `).join('');
+
+  const total = cartItems.reduce((s, i) => s + i.price, 0);
+  document.getElementById('struk-total').textContent = `Rp ${total.toLocaleString('id-ID')}`;
+}
+
+function clearStruk() {
+  cartItems = [];
+  renderStruk();
+}
+
+/* ══════════════════════════════════════════════════════
+   GALLERY DATA & RENDER
+══════════════════════════════════════════════════════ */
+const menuData = [
+  { name: 'Nasi Goreng',  price: 13000, category: 'nasi',  emoji: '🍳', img: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&q=80', desc: 'Nasi goreng spesial dengan telur mata sapi' },
+  { name: 'Nasi Padang',  price: 15000, category: 'nasi',  emoji: '🍚', img: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=400&q=80', desc: 'Nasi padang lengkap dengan rendang & sambal' },
+  { name: 'Rendang',      price: 15000, category: 'lauk',  emoji: '🥩', img: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=80', desc: 'Rendang daging sapi bumbu kaya rempah' },
+  { name: 'Sate',         price: 14000, category: 'lauk',  emoji: '🍢', img: 'https://images.unsplash.com/photo-1529694157872-4e0c0f3b238b?w=400&q=80', desc: 'Sate ayam Madura dengan bumbu kacang' },
+  { name: 'Gado-Gado',    price: 10000, category: 'lauk',  emoji: '🥗', img: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80', desc: 'Sayuran segar dengan saus kacang gurih' },
+  { name: 'Soto',         price: 12000, category: 'mie',   emoji: '🍜', img: 'https://images.unsplash.com/photo-1555126634-323283e090fa?w=400&q=80', desc: 'Soto ayam kuning segar dengan soun' },
+  { name: 'Rawon',        price: 12000, category: 'mie',   emoji: '🍲', img: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80', desc: 'Sup daging hitam khas Jawa Timur' },
+  { name: 'Mie Goreng',   price: 10000, category: 'mie',   emoji: '🍝', img: 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80', desc: 'Mie goreng bumbu spesial warung' },
+  { name: 'Ayam Goreng',  price: 10000, category: 'lauk',  emoji: '🍗', img: 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80', desc: 'Ayam goreng renyah bumbu kuning' },
+  { name: 'Ikan Goreng',  price:  8000, category: 'lauk',  emoji: '🐟', img: 'https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&q=80', desc: 'Ikan goreng garing dengan lalapan' },
+  { name: 'Burger',       price: 15000, category: 'barat', emoji: '🍔', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80', desc: 'Burger daging sapi dengan saus spesial' },
+  { name: 'French Fries', price: 12000, category: 'barat', emoji: '🍟', img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80', desc: 'Kentang goreng renyah dengan saus tomat' },
+  { name: 'Pizza',        price: 20000, category: 'barat', emoji: '🍕', img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80', desc: 'Pizza topping keju mozarella premium' },
+];
+
+let currentFilter = 'all';
+
+function filterMenu(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    const isActive = btn.getAttribute('onclick').includes(`'${cat}'`);
+    btn.classList.toggle('active-filter', isActive);
+    btn.classList.toggle('bg-batik-50', isActive);
+    btn.classList.toggle('text-batik-600', isActive);
+    btn.classList.toggle('border-batik-300', isActive);
+    btn.classList.toggle('text-tanah-500', !isActive);
+    btn.classList.toggle('border-tanah-200', !isActive);
+    btn.classList.toggle('bg-transparent', !isActive);
+  });
+  renderGallery();
+}
+
+function renderGallery() {
+  const grid    = document.getElementById('gallery-grid');
+  const filtered = currentFilter === 'all' ? menuData : menuData.filter(m => m.category === currentFilter);
+
+  grid.innerHTML = filtered.map(item => `
+    <div class="food-card bg-white rounded-2xl overflow-hidden shadow-md shadow-tanah-100 border border-batik-50 cursor-pointer"
+         onclick="quickScan('${item.name}', ${item.price})">
+      <div class="relative aspect-square overflow-hidden">
+        <img src="${item.img}" alt="${item.name}"
+          class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+          onerror="this.src='https://placehold.co/400x400/f0d4a8/c97a22?text=${encodeURIComponent(item.emoji)}'" />
+        <div class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full px-2.5 py-1 text-xs font-sans font-semibold text-batik-700 shadow">
+          Rp ${item.price.toLocaleString('id-ID')}
+        </div>
+      </div>
+      <div class="p-4">
+        <h4 class="font-lora font-semibold text-tanah-800 text-sm leading-tight mb-1">${item.name}</h4>
+        <p class="font-sans text-tanah-400 text-xs leading-snug">${item.desc}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+function quickScan(name, price) {
+  // Scroll to prediksi section and simulate result
+  document.getElementById('prediksi').scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => {
+    lastResult = { label: name, confidence: 100, price, image_b64: '' };
+    document.getElementById('result-img').src    = '';
+    document.getElementById('result-label').textContent = name;
+    document.getElementById('result-conf').textContent  = '100%';
+    document.getElementById('conf-bar').style.width     = '100%';
+    document.getElementById('result-price').textContent = `Rp ${price.toLocaleString('id-ID')}`;
+    showResultState('success');
+    lucide.createIcons();
+  }, 600);
+}
+
+/* ══════════════════════════════════════════════════════
+   CONTACT FORM
+══════════════════════════════════════════════════════ */
+function submitContact() {
+  document.getElementById('contact-form').classList.add('hidden');
+  document.getElementById('contact-success').classList.remove('hidden');
+  lucide.createIcons();
+}
+function resetContact() {
+  document.getElementById('contact-form').classList.remove('hidden');
+  document.getElementById('contact-success').classList.add('hidden');
+}
+
+/* ── Initial render ─────────────────────────────────── */
+renderGallery();
+renderStruk();
+lucide.createIcons();
+</script>
+</body>
+</html>
